@@ -1,0 +1,22 @@
+@model TodoManagementSystem.Models.TodoItem
+
+@{
+    ViewData["Title"] = "Görevi Sil";
+}
+
+<div class="row mt-4 justify-content-center">
+    <div class="col-md-6">
+        <div class="alert alert-danger shadow-sm">
+            <h4 class="alert-heading">⚠️ Dikkat!</h4>
+            <p><strong>"@Model.Title"</strong> başlıklı bu görevi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
+            
+            <hr>
+            
+            <form asp-action="Delete" method="post" class="d-flex justify-content-between mt-3">
+                <input type="hidden" asp-for="Id" />
+                <a asp-action="Index" class="btn btn-secondary">İptal Et</a>
+                <button type="submit" class="btn btn-danger">Evet, Sil</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+@model TodoManagementSystem.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <h2 class="text-center mb-4">Yeni Hesap Oluştur</h2>
+        
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="control-label fw-bold">E-posta Adresi</label>
+                <input asp-for="Email" class="form-control" placeholder="ornek@mail.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-3">
+                <label asp-for="Password" class="control-label fw-bold">Şifre</label>
+                <input asp-for="Password" class="form-control" placeholder="Şifrenizi giriniz" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group mb-4">
+                <label asp-for="ConfirmPassword" class="control-label fw-bold">Şifre Tekrar</label>
+                <input asp-for="ConfirmPassword" class="form-control" placeholder="Şifrenizi tekrar giriniz" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-block">Kayıt Ol</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+@model TodoManagementSystem.Models.TodoItem
+
+@{
+    ViewData["Title"] = "Kullanıcıya Görev Ata";
+    var users = ViewBag.Users as List<Microsoft.AspNetCore.Identity.IdentityUser>;
+}
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-success">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Kullanıcıya Görev Ata (Admin)</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="AssignTodo" method="post">
+                    
+                    <div class="form-group mb-3">
+                        <label class="control-label fw-bold">Görevin Verileceği Kullanıcı</label>
+                        <select name="selectedUserId" class="form-control" required>
+                            <option value="">-- Kullanıcı Seçin --</option>
+                            @foreach (var user in users!)
+                            {
+                                <option value="@user.Id">@user.UserName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Title" class="control-label fw-bold">Görev Başlığı</label>
+                        <input asp-for="Title" class="form-control" placeholder="Örn: Raporu tamamla..." />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label asp-for="Description" class="control-label fw-bold">Açıklama (İsteğe Bağlı)</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Detaylar..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">Paneline Dön</a>
+                        <button type="submit" class="btn btn-success">Görevi Ata</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
