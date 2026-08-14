@@ -12,7 +12,7 @@ namespace TodoManagementSystem.Services
         {
             _context = context;
         }
-
+//listeyi sıralama
         public async Task<List<TodoItem>> GetTodosByUserIdAsync(string userId)
         {
             return await _context.TodoItems
@@ -20,7 +20,7 @@ namespace TodoManagementSystem.Services
                 .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
         }
-
+//admin için bütün todoları getirme
         public async Task<List<TodoItem>> GetAllTodosAsync()
         {
             return await _context.TodoItems
@@ -28,24 +28,24 @@ namespace TodoManagementSystem.Services
                 .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
         }
-
+//todonun bağlı olduğu userIDyi getirme
         public async Task<TodoItem?> GetTodoByIdAsync(int id)
         {
             return await _context.TodoItems.FindAsync(id);
         }
-
+//YENİ TODO EKLEME
         public async Task AddTodoAsync(TodoItem todoItem)
         {
             _context.TodoItems.Add(todoItem);
             await _context.SaveChangesAsync();
         }
-
+//TODO UPDATE
         public async Task UpdateTodoAsync(TodoItem todoItem)
         {
             _context.TodoItems.Update(todoItem);
             await _context.SaveChangesAsync();
         }
-
+//TODO SİLME
         public async Task DeleteTodoAsync(int id)
         {
             var todo = await _context.TodoItems.FindAsync(id);

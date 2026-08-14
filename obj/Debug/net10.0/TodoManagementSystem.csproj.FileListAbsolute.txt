@@ -150,7 +150,6 @@
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/scopedcss/projectbundle/TodoManagementSystem.bundle.scp.css
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/ings47nzzu-{0}-b9sayid5wm-b9sayid5wm.gz
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/tryqnseso8-{0}-61n19gt1b8-61n19gt1b8.gz
-/Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/l0oava6dan-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/xcbxpbje4l-{0}-bqjiyaj88i-bqjiyaj88i.gz
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/tyxhglhgp1-{0}-c2jlpeoesf-c2jlpeoesf.gz
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/58mt1ecgf3-{0}-erw9l3u2r3-erw9l3u2r3.gz
@@ -223,3 +222,5 @@
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/ref/TodoManagementSystem.dll
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/gnc7ex4hj9-{0}-9e3v8gxz9z-9e3v8gxz9z.gz
 /Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/173duwk25w-{0}-9e3v8gxz9z-9e3v8gxz9z.gz
+/Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/TodoManagementSystem.sourcelink.json
+/Users/selcukozler/TodoManagementSystem/obj/Debug/net10.0/compressed/l0oava6dan-{0}-zbomn2dddl-zbomn2dddl.gz

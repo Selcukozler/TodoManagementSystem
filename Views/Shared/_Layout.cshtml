@@ -36,7 +36,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item ms-3">
-                                <a class="nav-link text-primary fw-bold" asp-controller="Todo" asp-action="Index">Görevlerim</a>
+                                <a class="nav-link text-dark" asp-controller="Todo" asp-action="Index">Görevlerim</a>
                             </li>
                         }
 
@@ -44,7 +44,7 @@
                         @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
                             <li class="nav-item ms-3">
-                                <a class="nav-link text-danger fw-bold" asp-controller="Admin" asp-action="Index"> Admin Paneli</a>
+                                <a class="nav-link text-dark " asp-controller="Admin" asp-action="Index"> Admin Paneli</a>
                             </li>
                         }
                     </ul>
@@ -54,11 +54,11 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item d-flex align-items-center">
-                                <span class="text-dark me-3">Merhaba, <b>@User.Identity?.Name</b>!</span>
+                                <span class="text-dark me-3">Merhaba : <b>@User.Identity?.Name</b></span>
                             </li>
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm mt-1">Çıkış Yap</button>
+                                    <button type="submit" class="btn  btn-sm mt-1">Çıkış Yap</button>
                                 </form>
                             </li>
                         }
@@ -68,7 +68,7 @@
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Kayıt Ol</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-primary btn-sm mt-1 ms-2" asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                                <a class="nav-link tex-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
                             </li>
                         }
                     </ul>

@@ -11,7 +11,5 @@ namespace TodoManagementSystem.ViewModels
         [Required(ErrorMessage = "Şifre zorunludur.")]
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
-
-        public bool RememberMe { get; set; } // Beni Hatırla butonu için
     }
 }

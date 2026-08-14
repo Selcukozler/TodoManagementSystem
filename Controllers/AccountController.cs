@@ -61,7 +61,8 @@ namespace TodoManagementSystem.Controllers
             if (ModelState.IsValid)
             {
                 // E-posta ve şifreyi kontrol et
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {

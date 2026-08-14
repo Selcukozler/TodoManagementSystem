@@ -1,15 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using TodoManagementSystem.Data;
-
+//builder olusturma
 var builder = WebApplication.CreateBuilder(args);
-
+//MVC ETKİNLESTİRNE
 builder.Services.AddControllersWithViews();
-
+//VERİTABANI BAĞLANTISI
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// BURASI GÜNCELLENDİ: AddDefaultIdentity yerine AddIdentity kullandık
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//SQL KULLAN VERİTABANI OLARAK
+//KULLANICI SİSTEMİNİN KURULMASI
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
     
     options.SignIn.RequireConfirmedAccount = false;
@@ -18,6 +17,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
 })
+//EF ÜZERİNDEN IDENTİTY
 .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<TodoManagementSystem.Services.ITodoService, TodoManagementSystem.Services.TodoService>();
 var app = builder.Build();
@@ -33,7 +33,7 @@ app.UseRouting();
 
 app.UseAuthentication(); 
 app.UseAuthorization();  
-
+//CSS, JavaScript, resim gibi statik dosyaların kullanımı
 app.MapStaticAssets();
 
 app.MapControllerRoute(
@@ -69,4 +69,4 @@ using (var scope = app.Services.CreateScope())
 }
 // --- ADMİN HESABI OLUŞTURMA KODLARI BİTİŞİ ---
 
-app.Run(); // Bu satır zaten dosyanın en sonunda vardı s
+app.Run(); 

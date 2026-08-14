@@ -7,19 +7,24 @@
 }
 
 <div class="mt-4 mb-4">
-    <h2> Sistem Yönetim Paneli</h2>
+    <h2>Sistem Yönetim Paneli</h2>
 </div>
+
 <div class="mb-3">
-    <a asp-controller="Admin" asp-action="AssignTodo" class="btn btn-success">➕ Kullanıcıya Görev Ata</a>
+    <a asp-controller="Admin" asp-action="AssignTodo" class="btn btn-success">
+         Kullanıcıya Görev Ata
+    </a>
 </div>
 
 <div class="row">
+
     <!-- SOL TARAF: KULLANICILAR LİSTESİ -->
     <div class="col-md-4">
         <div class="card shadow-sm border-danger">
             <div class="card-header bg-danger text-white">
                 <h5 class="mb-0">Kayıtlı Kullanıcılar</h5>
             </div>
+
             <ul class="list-group list-group-flush">
                 @foreach (var user in Model)
                 {
@@ -34,47 +39,86 @@
     <!-- SAĞ TARAF: TÜM GÖREVLER LİSTESİ -->
     <div class="col-md-8">
         <div class="card shadow-sm border-primary">
+
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">Sistemdeki Tüm Görevler</h5>
             </div>
+
             <div class="card-body">
                 <table class="table table-hover">
+
                     <thead>
                         <tr>
                             <th>Kullanıcı</th>
                             <th>Başlık</th>
                             <th>Durum</th>
+                            <th>Oluşturulma Tarihi</th>
                             <th>İşlemler</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach (var item in todos!)
                         {
                             <tr>
-                                <td class="text-muted">@item.User.UserName</td>
-                                <td class="fw-bold">@item.Title</td>
+
+                                <td class="text-muted">
+                                    @item.User.UserName
+                                </td>
+
+                                <td class="fw-bold">
+                                    @item.Title
+                                </td>
+
                                 <td>
                                     @if (item.IsCompleted)
                                     {
-                                        <span class="badge bg-success">Tamamlandı</span>
+                                        <span class="badge bg-success">
+                                            Tamamlandı
+                                        </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-warning text-dark">Devam Ediyor</span>
+                                        <span class="badge bg-warning text-dark">
+                                            Devam Ediyor
+                                        </span>
                                     }
                                 </td>
+
                                 <td>
-                                    <!-- ADMİN İÇİN DÜZENLE VE SİL BUTONLARI -->
+                                    @item.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                                </td>
+
+                                <td>
                                     <div class="d-flex">
-                                        <a asp-controller="Admin" asp-action="EditTodo" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1">Düzenle</a>
-                                        <form asp-controller="Admin" asp-action="DeleteTodo" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Bu görevi silmek istediğinize emin misiniz?');">
-                                            <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+
+                                        <a asp-controller="Admin"
+                                           asp-action="EditTodo"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-warning me-1">
+                                            Düzenle
+                                        </a>
+
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteTodo"
+                                              asp-route-id="@item.Id"
+                                              method="post"
+                                              onsubmit="return confirm('Bu görevi silmek istediğinize emin misiniz?');">
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger">
+                                                Sil
+                                            </button>
+
                                         </form>
+
                                     </div>
                                 </td>
+
                             </tr>
                         }
                     </tbody>
+
                 </table>
             </div>
         </div>
