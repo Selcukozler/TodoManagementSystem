@@ -21,5 +21,7 @@ namespace TodoManagementSystem.Services
         
         // Görevi siler
         Task DeleteTodoAsync(int id);
+        //Yorum ekleme
+        Task AddCommentAsync(TodoComment comment);
     }
 }

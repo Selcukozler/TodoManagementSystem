@@ -35,8 +35,16 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9Mb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/selcukozler/TodoManagementSystem/Views/Account/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9Qcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/selcukozler/TodoManagementSystem/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9SZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/selcukozler/TodoManagementSystem/Views/Account/UserProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9Vc2VyUHJvZmlsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/selcukozler/TodoManagementSystem/Views/Admin/AssignTodo.cshtml]
@@ -73,6 +81,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/selcukozler/TodoManagementSystem/Views/Todo/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVG9kby9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/selcukozler/TodoManagementSystem/Views/Todo/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVG9kby9EZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/selcukozler/TodoManagementSystem/Views/Todo/Edit.cshtml]

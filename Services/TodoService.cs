@@ -29,10 +29,14 @@ namespace TodoManagementSystem.Services
                 .ToListAsync();
         }
 //todonun bağlı olduğu userIDyi getirme
-        public async Task<TodoItem?> GetTodoByIdAsync(int id)
-        {
-            return await _context.TodoItems.FindAsync(id);
-        }
+       public async Task<TodoItem?> GetTodoByIdAsync(int id)
+{
+    return await _context.TodoItems
+        .Include(t => t.User)
+        .Include(t => t.Comments)         // Yorumları dahil et
+            .ThenInclude(c => c.User)     // Yorumu yapan kullanıcıyı dahil et
+        .FirstOrDefaultAsync(t => t.Id == id);
+}
 //YENİ TODO EKLEME
         public async Task AddTodoAsync(TodoItem todoItem)
         {
@@ -55,5 +59,10 @@ namespace TodoManagementSystem.Services
                 await _context.SaveChangesAsync();
             }
         }
+          public async Task AddCommentAsync(TodoComment comment)
+{
+    _context.TodoComments.Add(comment);
+    await _context.SaveChangesAsync();
+}
     }
 }

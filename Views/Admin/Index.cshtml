@@ -1,5 +1,5 @@
 @using TodoManagementSystem.Models
-@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@model IEnumerable<TodoManagementSystem.Models.ApplicationUser>
 
 @{
     ViewData["Title"] = "Admin Paneli";
@@ -29,7 +29,18 @@
                 @foreach (var user in Model)
                 {
                     <li class="list-group-item">
-                        <strong>@user.UserName</strong>
+                        <!-- Kullanıcı profiline giden link (PP + İsim) -->
+                        <a asp-controller="Account" asp-action="UserProfile" asp-route-id="@user.Id" class="d-flex align-items-center text-decoration-none">
+                            @if (!string.IsNullOrEmpty(user.ProfilePicturePath))
+                            {
+                                <img src="@user.ProfilePicturePath" class="rounded-circle me-2 border" style="width: 30px; height: 30px; object-fit: cover;" alt="PP" />
+                            }
+                            else
+                            {
+                                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2 border" style="width: 30px; height: 30px; object-fit: cover;" alt="Varsayılan" />
+                            }
+                            <strong class="text-dark">@user.UserName</strong>
+                        </a>
                     </li>
                 }
             </ul>
@@ -45,7 +56,7 @@
             </div>
 
             <div class="card-body">
-                <table class="table table-hover">
+                <table class="table table-hover align-middle">
 
                     <thead>
                         <tr>
@@ -62,8 +73,19 @@
                         {
                             <tr>
 
-                                <td class="text-muted">
-                                    @item.User.UserName
+                                <td>
+                                    <!-- Görev sahibine giden link (PP + İsim) -->
+                                    <a asp-controller="Account" asp-action="UserProfile" asp-route-id="@item.UserId" class="d-flex align-items-center text-decoration-none">
+                                        @if (!string.IsNullOrEmpty(item.User?.ProfilePicturePath))
+                                        {
+                                            <img src="@item.User.ProfilePicturePath" class="rounded-circle me-2 border" style="width: 26px; height: 26px; object-fit: cover;" alt="PP" />
+                                        }
+                                        else
+                                        {
+                                            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2 border" style="width: 26px; height: 26px; object-fit: cover;" alt="Varsayılan" />
+                                        }
+                                        <span class="text-muted fw-bold">@item.User?.UserName</span>
+                                    </a>
                                 </td>
 
                                 <td class="fw-bold">

@@ -1,53 +1,102 @@
-@model IEnumerable<TodoManagementSystem.Models.TodoItem>
-
 @{
-    ViewData["Title"] = "Görevlerim";
+    ViewData["Title"] = "Görev Panosu";
+    // Controller'dan gelen listeleri karşılıyoruz
+    var myTodos = ViewBag.MyTodos as List<TodoManagementSystem.Models.TodoItem>;
+    var otherTodos = ViewBag.OtherTodos as List<TodoManagementSystem.Models.TodoItem>;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4 mt-4">
-    <h2>Görevlerim</h2>
-    <a asp-action="Create" class="btn btn-success">Yeni Görev Ekle</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Görev Panosu</h2>
+    <a asp-action="Create" class="btn btn-primary">Yeni Görev Ekle</a>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th>Başlık</th>
-                    <th>Durum</th>
-                    <th>Oluşturulma Tarihi</th>
-                    <th>İşlemler</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
+<!-- Sekme Başlıkları -->
+<ul class="nav nav-tabs" id="todoTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-bold" id="my-tasks-tab" data-bs-toggle="tab" data-bs-target="#my-tasks" type="button" role="tab">
+            Görevlerim <span class="badge bg-primary ms-1">@myTodos?.Count</span>
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-bold" id="other-tasks-tab" data-bs-toggle="tab" data-bs-target="#other-tasks" type="button" role="tab">
+            Diğer Görevler <span class="badge bg-secondary ms-1">@otherTodos?.Count</span>
+        </button>
+    </li>
+</ul>
+
+<!-- Sekme İçerikleri -->
+<div class="tab-content" id="todoTabsContent">
+    
+    <!-- 1. GÖREVLERİM SEKMESİ -->
+    <div class="tab-pane fade show active p-3 border border-top-0 bg-white shadow-sm" id="my-tasks" role="tabpanel">
+        @if (myTodos != null && myTodos.Any())
+        {
+            <div class="list-group list-group-flush">
+                @foreach (var item in myTodos)
                 {
-                    <tr>
-                        <td class="fw-bold">@item.Title</td>
-                        <td>
-                            @if (item.IsCompleted)
-                            {
-                                <span class="badge bg-success">Tamamlandı</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">Devam Ediyor</span>
-                            }
-                        </td>
-                         <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
-                        
-                        <td>
-    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Düzenle</a>
-</td>
-<td>
-                            
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger ms-1">Sil</a>
-                        </td>
-                        
-                    </tr>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1 @(item.IsCompleted ? " text-muted" : "")">@item.Title</h5>
+                            <small class="text-muted">Oluşturulma: @item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                        </div>
+                        <div>
+                            @if(item.IsCompleted) { <span class="badge bg-success me-2">Tamamlandı</span> }
+                            else { <span class="badge bg-warning text-dark me-2">Devam Ediyor</span> }
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Düzenle / Yorumlar</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Sil</a>
+                        </div>
+                    </div>
                 }
-            </tbody>
-        </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info mb-0">Henüz sana ait bir görev bulunamadı.</div>
+        }
     </div>
+
+    <!-- 2. DİĞER GÖREVLER SEKMESİ -->
+    <div class="tab-pane fade p-3 border border-top-0 bg-white shadow-sm" id="other-tasks" role="tabpanel">
+        @if (otherTodos != null && otherTodos.Any())
+        {
+            <div class="list-group list-group-flush">
+                @foreach (var item in otherTodos)
+                {
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">@item.Title</h5>
+                            <p class="mb-1">
+                                <!-- Görevin sahibini gösteriyoruz -->
+<a asp-controller="Account" asp-action="UserProfile" asp-route-id="@item.UserId" class="d-inline-flex align-items-center text-primary fw-bold text-decoration-none">
+    
+    @if (!string.IsNullOrEmpty(item.User?.ProfilePicturePath))
+    {
+        <img src="@item.User.ProfilePicturePath" class="rounded-circle me-2 border shadow-sm" style="width: 28px; height: 28px; object-fit: cover;" alt="PP" />
+    }
+    else
+    {
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2 border shadow-sm" style="width: 28px; height: 28px; object-fit: cover;" alt="Varsayılan" />
+    }
+    
+    Sahibi: @item.User?.UserName
+</a>
+                                <small class="text-muted ms-2">(@item.CreatedAt.ToString("dd.MM.yyyy HH:mm"))</small>
+                            </p>
+                        </div>
+                        <div>
+                            @if(item.IsCompleted) { <span class="badge bg-success">Tamamlandı</span> }
+                            else { <span class="badge bg-warning text-dark">Devam Ediyor</span> }
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">Detay / Yorum Yap</a>
+                           
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-secondary mb-0">Sistemde başkasına ait görev bulunamadı.</div>
+        }
+    </div>
+    
 </div>

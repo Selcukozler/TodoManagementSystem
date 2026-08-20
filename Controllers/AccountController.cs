@@ -1,21 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using TodoManagementSystem.Models;
 using TodoManagementSystem.ViewModels;
+using TodoManagementSystem.Services; 
 
 namespace TodoManagementSystem.Controllers
 {
     public class AccountController : Controller
     {
-        // Identity paketinin bize sunduğu hazır kullanıcı ve giriş yöneticileri
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ITodoService _todoService; 
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        // Constructor güncellendi
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ITodoService todoService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _todoService = todoService;
         }
-
         // 1. KAYIT OLMA EKRANINI AÇAN METOT (GET)
         public IActionResult Register()
         {
@@ -26,20 +30,18 @@ namespace TodoManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            // Kullanıcı ViewModel'deki kurallara (boş bırakmama, şifre eşleşmesi vs.) uydu mu?
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                // BURASI ÖNEMLİ: Artık yeni kayıt olan kişi bir ApplicationUser
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
-                    // Kayıt başarılıysa kullanıcıyı otomatik içeri al (Giriş yap)
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home"); // Ana sayfaya yönlendir
+                    return RedirectToAction("Index", "Home"); 
                 }
 
-                // Eğer şifre zayıfsa vb. hatalar varsa bunları ekrana gönder
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
@@ -60,16 +62,13 @@ namespace TodoManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                // E-posta ve şifreyi kontrol et
-
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home"); // Başarılıysa ana sayfaya git
+                    return RedirectToAction("Index", "Home"); 
                 }
 
-                // Hatalıysa genel bir hata mesajı ver
                 ModelState.AddModelError(string.Empty, "E-posta veya şifre hatalı.");
             }
             return View(model);
@@ -80,7 +79,88 @@ namespace TodoManagementSystem.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home"); // Çıkış yapınca ana sayfaya dön
+            return RedirectToAction("Index", "Home"); 
+        }
+
+        // 6. PROFİL SAYFASI VE FOTOĞRAF YÜKLEME
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return View(user);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UploadProfilePicture(IFormFile profilePicture)
+        {
+            if (profilePicture != null && profilePicture.Length > 0)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(profilePicture.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/profiles", fileName);
+                var directory = Path.GetDirectoryName(filePath);
+                
+                if (!Directory.Exists(directory)) 
+                    Directory.CreateDirectory(directory!);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await profilePicture.CopyToAsync(stream);
+                }
+                if (user != null)
+                {
+                 user.ProfilePicturePath = "/images/profiles/" + fileName;
+                 await _userManager.UpdateAsync(user);
+                }
+            
+            }
+            
+            return RedirectToAction("Profile");
+        }
+        // 1. PROFİL FOTOĞRAFINI KALDIRMA
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> RemoveProfilePicture()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                user.ProfilePicturePath = null;
+                await _userManager.UpdateAsync(user);
+            }
+            return RedirectToAction("Profile");
+        }
+
+        // 2. İSTEĞE BAĞLI BİLGİLERİ GÜNCELLEME
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfileInfo(string firstName, string lastName, string bio)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                user.FirstName = firstName;
+                user.LastName = lastName;
+                user.Bio = bio;
+                await _userManager.UpdateAsync(user);
+            }
+            return RedirectToAction("Profile");
+        }
+
+        // 3. BAŞKASININ PROFİLİNİ GÖRÜNTÜLEME
+        [Authorize]
+        public async Task<IActionResult> UserProfile(string id)
+        {
+            var targetUser = await _userManager.FindByIdAsync(id);
+            if (targetUser == null) return NotFound();
+
+            // O kullanıcının görevlerini getir
+            var userTodos = await _todoService.GetTodosByUserIdAsync(id);
+            ViewBag.UserTodos = userTodos;
+
+            return View(targetUser);
         }
     }
 }

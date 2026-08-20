@@ -6,84 +6,74 @@ using TodoManagementSystem.Services;
 
 namespace TodoManagementSystem.Controllers
 {
-    // [Authorize] etiketi: "Bu sayfadaki hiçbir şeye giriş yapmamış biri ulaşamaz" demektir. Kapıya kilit vurduk.
     [Authorize] 
     public class TodoController : Controller
     {
         private readonly ITodoService _todoService;
-        private readonly UserManager<IdentityUser> _userManager;
+        // IdentityUser yerine ApplicationUser kullanıyoruz
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        // Daha önce yazdığımız Servis'i (İş kurallarını) ve Kullanıcı Yöneticisi'ni içeri alıyoruz.
-        public TodoController(ITodoService todoService, UserManager<IdentityUser> userManager)
+        public TodoController(ITodoService todoService, UserManager<ApplicationUser> userManager)
         {
             _todoService = todoService;
             _userManager = userManager;
         }
 
         // 1. GÖREVLERİ LİSTELEME EKRANI (Ana Sayfamız)
-        public async Task<IActionResult> Index()
-        {
-            // O an sisteme giriş yapmış olan kişinin kimlik numarasını (ID) buluyoruz
-            var userId = _userManager.GetUserId(User);
-            
-            // SADECE o kişiye ait görevleri servisten istiyoruz
-            var todos = await _todoService.GetTodosByUserIdAsync(userId!);
-            
-            return View(todos);
-        }
+public async Task<IActionResult> Index()
+{
+    var userId = _userManager.GetUserId(User);
+    
+    // Servisteki "Tüm Görevleri Getir" metodunu kullanıyoruz (User bilgileri de dahil gelecek)
+    var allTodos = await _todoService.GetAllTodosAsync();
+    
+    // Kendi görevlerim
+    ViewBag.MyTodos = allTodos.Where(t => t.UserId == userId).ToList();
+    
+    // Diğer kişilerin görevleri
+    ViewBag.OtherTodos = allTodos.Where(t => t.UserId != userId).ToList();
+    
+    return View(); // Artık doğrudan model göndermiyoruz, ViewBag kullanıyoruz
+}
 
-        // 2. YENİ GÖREV EKLEME EKRANI (Açılış - GET)
         public IActionResult Create()
         {
             return View();
         }
 
-        // 3. YENİ GÖREVİ VERİTABANINA KAYDETME (Gönderim - POST)
         [HttpPost]
         public async Task<IActionResult> Create(TodoItem todoItem)
         {
-            // Sisteme diyoruz ki: "Formdan UserId ve User gelmeyecek, 
-            // sen onlar için hata verme (validation yapma), ben onları aşağıda kendim dolduracağım."
             ModelState.Remove("UserId");
             ModelState.Remove("User");
 
-            // Şimdi kontrol et, Başlık vs. düzgün girilmiş mi?
             if (ModelState.IsValid)
             {
-                // Görevin sahibini, o an giriş yapmış kişi olarak arka planda atıyoruz.
                 todoItem.UserId = _userManager.GetUserId(User)!;
-                
-                // Servisi çağırıp veritabanına kaydet
                 await _todoService.AddTodoAsync(todoItem);
                 
-                // Kayıt bitince listeleme (Index) sayfasına geri gönder
                 return RedirectToAction("Index"); 
             }
             
-            // Eğer model geçerli değilse (örneğin başlık boşsa) formu hatalarla geri döndür
             return View(todoItem);
         }
 
-        // 4. GÖREV DÜZENLEME EKRANI (Açılış - GET)
         public async Task<IActionResult> Edit(int id)
         {
-            // Tıklanan görevi veritabanından bul
             var todo = await _todoService.GetTodoByIdAsync(id);
             if (todo == null)
             {
-                return NotFound(); // Görev yoksa hata sayfası göster
+                return NotFound();
             }
 
-            // GÜVENLİK KONTROLÜ: Bu görev bu kullanıcıya mı ait?
             if (todo.UserId != _userManager.GetUserId(User))
             {
-                return Unauthorized(); // Başkasının görevini düzenlemeye çalışırsa engelle
+                return Unauthorized(); 
             }
 
             return View(todo);
         }
 
-        // 5. GÖREV DÜZENLEMEYİ KAYDETME (Gönderim - POST)
         [HttpPost]
         public async Task<IActionResult> Edit(int id, TodoItem todoItem)
         {
@@ -92,23 +82,19 @@ namespace TodoManagementSystem.Controllers
                 return NotFound();
             }
 
-            // Yine UserId ve User hatalarını görmezden gel diyoruz
             ModelState.Remove("UserId");
             ModelState.Remove("User");
 
             if (ModelState.IsValid)
             {
-                // Güvenliği sağlamak için görevin sahibini tekrar atıyoruz
                 todoItem.UserId = _userManager.GetUserId(User)!;
-
-                // Servisi çağırıp değişiklikleri veritabanına kaydet
                 await _todoService.UpdateTodoAsync(todoItem);
                 
                 return RedirectToAction("Index");
             }
             return View(todoItem);
         }
-        // 6. GÖREV SİLME ONAY EKRANI (Açılış - GET)
+
         public async Task<IActionResult> Delete(int id)
         {
             var todo = await _todoService.GetTodoByIdAsync(id);
@@ -117,7 +103,6 @@ namespace TodoManagementSystem.Controllers
                 return NotFound();
             }
 
-            // GÜVENLİK KONTROLÜ: Başkası senin görevini silemesin
             if (todo.UserId != _userManager.GetUserId(User))
             {
                 return Unauthorized();
@@ -126,13 +111,11 @@ namespace TodoManagementSystem.Controllers
             return View(todo);
         }
 
-        // 7. GÖREVİ VERİTABANINDAN SİLME (Gönderim - POST)
-        [HttpPost, ActionName("Delete")] // HTML'deki form "Delete" ismini arayacağı için bu etiketi ekliyoruz
+        [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var todo = await _todoService.GetTodoByIdAsync(id);
             
-            // Son bir güvenlik kontrolü daha yapıp siliyoruz
             if (todo != null && todo.UserId == _userManager.GetUserId(User))
             {
                 await _todoService.DeleteTodoAsync(id);
@@ -140,5 +123,42 @@ namespace TodoManagementSystem.Controllers
             
             return RedirectToAction("Index");
         }
+
+        //YORUM YAPMA METODU
+        [HttpPost]
+        public async Task<IActionResult> AddComment(int todoId, string text)
+{
+    if (!string.IsNullOrWhiteSpace(text))
+    {
+        var comment = new TodoComment
+        {
+            TodoItemId = todoId,
+            Text = text,
+            UserId = _userManager.GetUserId(User)!
+        };
+        await _todoService.AddCommentAsync(comment);
+    }
+    
+    // Yorum yapılan görev kimin?
+    var todo = await _todoService.GetTodoByIdAsync(todoId);
+    
+    // Eğer görev benimse düzenleme (Edit) sayfasına geri dön
+    if (todo != null && todo.UserId == _userManager.GetUserId(User))
+    {
+        return RedirectToAction("Edit", new { id = todoId }); 
+    }
+    
+    // Eğer görev başkasınınsa detay (Details) sayfasına geri dön
+    return RedirectToAction("Details", new { id = todoId }); 
+}
+    
+    public async Task<IActionResult> Details(int id)
+{
+    var todo = await _todoService.GetTodoByIdAsync(id);
+    if (todo == null) return NotFound();
+    
+    return View(todo);
+}
+    
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using TodoManagementSystem.Data;
+using TodoManagementSystem.Models;
 //builder olusturma
 var builder = WebApplication.CreateBuilder(args);
 //MVC ETKİNLESTİRNE
@@ -9,8 +10,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//SQL KULLAN VERİTABANI OLARAK
 //KULLANICI SİSTEMİNİN KURULMASI
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
-    
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => { // IdentityUser -> ApplicationUser oldu
+    options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
@@ -45,7 +46,8 @@ app.MapControllerRoute(
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    // BURASI DEĞİŞTİ: Artık ApplicationUser yöneticisini çağırıyoruz
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
     // 1. "Admin" adında bir rol var mı kontrol et, yoksa oluştur
     if (!await roleManager.RoleExistsAsync("Admin"))
@@ -57,8 +59,8 @@ using (var scope = app.Services.CreateScope())
     var adminUser = await userManager.FindByEmailAsync("admin@mail.com");
     if (adminUser == null)
     {
-        // Yoksa yeni bir patron hesabı oluştur
-        adminUser = new IdentityUser { UserName = "admin@mail.com", Email = "admin@mail.com" };
+        // BURASI DEĞİŞTİ: Yeni hesabı ApplicationUser olarak oluşturuyoruz
+        adminUser = new ApplicationUser { UserName = "admin@mail.com", Email = "admin@mail.com" };
         
         // Şifresini "admin123" olarak belirliyoruz
         await userManager.CreateAsync(adminUser, "admin123"); 

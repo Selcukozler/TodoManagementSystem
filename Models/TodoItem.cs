@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
 
 namespace TodoManagementSystem.Models
 {
@@ -22,6 +21,10 @@ namespace TodoManagementSystem.Models
         [Required]
         public string UserId { get; set; } = string.Empty; 
         
-        public virtual IdentityUser User { get; set; } = null!; 
+        // IdentityUser yerine kendi ApplicationUser sınıfımızı kullanıyoruz
+        public virtual ApplicationUser User { get; set; } = null!; 
+
+        // Bu Todo'ya ait yorumların listesi
+        public virtual ICollection<TodoComment> Comments { get; set; } = new List<TodoComment>();
     }
 }

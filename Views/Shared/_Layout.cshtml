@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
-
+@using TodoManagementSystem.Models
+@inject Microsoft.AspNetCore.Identity.SignInManager<TodoManagementSystem.Models.ApplicationUser> SignInManager
+@inject Microsoft.AspNetCore.Identity.UserManager<TodoManagementSystem.Models.ApplicationUser> UserManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,12 +53,27 @@
                     <ul class="navbar-nav ms-auto">
                         @if (SignInManager.IsSignedIn(User))
                         {
+                            // İŞTE BURAYA KULLANICIYI ÇEKEN KODU EKLEDİK
+                            var currentUser = await UserManager.GetUserAsync(User);
+
                             <li class="nav-item d-flex align-items-center">
-                                <span class="text-dark me-3">Merhaba : <b>@User.Identity?.Name</b></span>
+                                <a class="nav-link text-primary fw-bold me-3 d-flex align-items-center" asp-controller="Account" asp-action="Profile">
+                                    
+                                    <!-- PROFİL FOTOĞRAFI GÖSTERİMİ -->
+                                    @if (!string.IsNullOrEmpty(currentUser?.ProfilePicturePath))
+                                    {
+                                        <img src="@currentUser.ProfilePicturePath" class="rounded-circle me-2 shadow-sm" style="width: 35px; height: 35px; object-fit: cover;" alt="PP" />
+                                    }
+                                    else
+                                    {
+                                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2 shadow-sm" style="width: 35px; height: 35px; object-fit: cover;" alt="Varsayılan" />
+                                    }
+                                    Profil
+                                </a>
                             </li>
-                            <li class="nav-item">
-                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn  btn-sm mt-1">Çıkış Yap</button>
+                            <li class="nav-item d-flex align-items-center">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline m-0">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Çıkış Yap</button>
                                 </form>
                             </li>
                         }
@@ -68,7 +83,7 @@
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Kayıt Ol</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link tex-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
                             </li>
                         }
                     </ul>
