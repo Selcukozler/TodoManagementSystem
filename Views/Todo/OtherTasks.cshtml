@@ -1,0 +1,74 @@
+@model IEnumerable<TodoManagementSystem.Models.TodoItem>
+@{
+    ViewData["Title"] = "Diğer Kullanıcıların Görevleri";
+    Layout = "_UserLayout";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header border-bottom">
+                <h5 class="mb-0">Diğer Kullanıcıların Görevleri</h5>
+            </div>
+            
+            <div class="card-body mt-3">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Sahibi</th>
+                                    <th>Görev Başlığı</th>
+                                    <th>Oluşturulma Tarihi</th>
+                                    <th>Durum</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+                                @foreach (var item in Model.OrderByDescending(t => t.CreatedAt))
+                                {
+                                    <tr>
+                                        <td>
+                                            <!-- Görev sahibinin profiline gitmek için link -->
+                                            <a asp-controller="Account" asp-action="UserProfile" asp-route-id="@item.UserId" class="fw-bold text-primary">
+                                                @(item.User?.UserName ?? "Bilinmeyen Kullanıcı")
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <strong class="@(item.IsCompleted ? "text-decoration-line-through text-muted" : "")">
+                                                @item.Title
+                                            </strong>
+                                        </td>
+                                        <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            @if (item.IsCompleted)
+                                            {
+                                                <span class="badge bg-label-success">Tamamlandı</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-label-warning text-dark">Devam Ediyor</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">
+                                                <i class="bx bx-message-rounded-dots me-1"></i> Detaylar / Yorum Yap
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-secondary mb-0" role="alert">
+                        Şu anda sistemde diğer kullanıcılara ait bir görev bulunmuyor.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+@model IEnumerable<TodoManagementSystem.Models.TodoItem>
+@{
+    ViewData["Title"] = "Tüm Görevler";
+    Layout = "_AdminLayout";
+}
+
+<h1 class="h3 mb-4 text-gray-800">Tüm Görevler</h1>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Sistemdeki Tüm Görevler</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Görev Sahibi</th>
+                        <th>Başlık</th>
+                        <th>Durum</th>
+                        <th>İşlemler (Düzenle/Sil)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderByDescending(t => t.CreatedAt))
+                    {
+                        <tr>
+                            <td class="fw-bold text-primary">@(item.User?.Email ?? "Bilinmiyor")</td>
+                            <td>@item.Title</td>
+                            <td>
+                                @if (item.IsCompleted) { <span class="badge badge-success">Tamamlandı</span> }
+                                else { <span class="badge badge-warning">Devam Ediyor</span> }
+                            </td>
+                            <td>
+                                <a asp-action="EditTodo" asp-route-id="@item.Id" class="btn btn-primary btn-sm mr-2">
+                                    <i class="fas fa-edit"></i> Düzenle / Yorumlar
+                                </a>
+                                <!-- SweetAlert Sınıfı Eklenmiş Silme Formu -->
+                                <form asp-action="DeleteTodo" asp-route-id="@item.Id" method="post" class="d-inline delete-form" data-message="Bu görevi tamamen silmek istediğinize emin misiniz?">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

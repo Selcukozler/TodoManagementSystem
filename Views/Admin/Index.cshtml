@@ -1,148 +1,100 @@
-@using TodoManagementSystem.Models
-@model IEnumerable<TodoManagementSystem.Models.ApplicationUser>
-
+@model List<TodoManagementSystem.Models.ApplicationUser>
 @{
-    ViewData["Title"] = "Admin Paneli";
-    var todos = ViewBag.AllTodos as List<TodoItem>;
+    ViewData["Title"] = "Sistem Özeti";
+    // Eski tasarımı ezip, KESİNLİKLE SB Admin 2'yi kullanmasını sağlıyoruz:
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; 
+
+    // Controller'dan gelen tüm görevleri yakalıyoruz
+    var allTodos = ViewBag.AllTodos as IEnumerable<TodoManagementSystem.Models.TodoItem>;
 }
 
-<div class="mt-4 mb-4">
-    <h2>Sistem Yönetim Paneli</h2>
-</div>
-
-<div class="mb-3">
-    <a asp-controller="Admin" asp-action="AssignTodo" class="btn btn-success">
-         Kullanıcıya Görev Ata
+<!-- Sayfa Başlığı -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Sistem Özeti</h1>
+    <a asp-action="AssignTodo" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fas fa-plus fa-sm text-white-50"></i> Yeni Görev Ata
     </a>
 </div>
 
+<!-- Üst İstatistik Kartları -->
 <div class="row">
-
-    <!-- SOL TARAF: KULLANICILAR LİSTESİ -->
-    <div class="col-md-4">
-        <div class="card shadow-sm border-danger">
-            <div class="card-header bg-danger text-white">
-                <h5 class="mb-0">Kayıtlı Kullanıcılar</h5>
+    <!-- Toplam Kullanıcı Kartı -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Sistemdeki Kullanıcılar</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.Count()</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
             </div>
-
-            <ul class="list-group list-group-flush">
-                @foreach (var user in Model)
-                {
-                    <li class="list-group-item">
-                        <!-- Kullanıcı profiline giden link (PP + İsim) -->
-                        <a asp-controller="Account" asp-action="UserProfile" asp-route-id="@user.Id" class="d-flex align-items-center text-decoration-none">
-                            @if (!string.IsNullOrEmpty(user.ProfilePicturePath))
-                            {
-                                <img src="@user.ProfilePicturePath" class="rounded-circle me-2 border" style="width: 30px; height: 30px; object-fit: cover;" alt="PP" />
-                            }
-                            else
-                            {
-                                <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2 border" style="width: 30px; height: 30px; object-fit: cover;" alt="Varsayılan" />
-                            }
-                            <strong class="text-dark">@user.UserName</strong>
-                        </a>
-                    </li>
-                }
-            </ul>
         </div>
     </div>
 
-    <!-- SAĞ TARAF: TÜM GÖREVLER LİSTESİ -->
-    <div class="col-md-8">
-        <div class="card shadow-sm border-primary">
-
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Sistemdeki Tüm Görevler</h5>
-            </div>
-
+    <!-- Toplam Görev Kartı -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
-                <table class="table table-hover align-middle">
-
-                    <thead>
-                        <tr>
-                            <th>Kullanıcı</th>
-                            <th>Başlık</th>
-                            <th>Durum</th>
-                            <th>Oluşturulma Tarihi</th>
-                            <th>İşlemler</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var item in todos!)
-                        {
-                            <tr>
-
-                                <td>
-                                    <!-- Görev sahibine giden link (PP + İsim) -->
-                                    <a asp-controller="Account" asp-action="UserProfile" asp-route-id="@item.UserId" class="d-flex align-items-center text-decoration-none">
-                                        @if (!string.IsNullOrEmpty(item.User?.ProfilePicturePath))
-                                        {
-                                            <img src="@item.User.ProfilePicturePath" class="rounded-circle me-2 border" style="width: 26px; height: 26px; object-fit: cover;" alt="PP" />
-                                        }
-                                        else
-                                        {
-                                            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="rounded-circle me-2 border" style="width: 26px; height: 26px; object-fit: cover;" alt="Varsayılan" />
-                                        }
-                                        <span class="text-muted fw-bold">@item.User?.UserName</span>
-                                    </a>
-                                </td>
-
-                                <td class="fw-bold">
-                                    @item.Title
-                                </td>
-
-                                <td>
-                                    @if (item.IsCompleted)
-                                    {
-                                        <span class="badge bg-success">
-                                            Tamamlandı
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-warning text-dark">
-                                            Devam Ediyor
-                                        </span>
-                                    }
-                                </td>
-
-                                <td>
-                                    @item.CreatedAt.ToString("dd.MM.yyyy HH:mm")
-                                </td>
-
-                                <td>
-                                    <div class="d-flex">
-
-                                        <a asp-controller="Admin"
-                                           asp-action="EditTodo"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-sm btn-warning me-1">
-                                            Düzenle
-                                        </a>
-
-                                        <form asp-controller="Admin"
-                                              asp-action="DeleteTodo"
-                                              asp-route-id="@item.Id"
-                                              method="post"
-                                              onsubmit="return confirm('Bu görevi silmek istediğinize emin misiniz?');">
-
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-danger">
-                                                Sil
-                                            </button>
-
-                                        </form>
-
-                                    </div>
-                                </td>
-
-                            </tr>
-                        }
-                    </tbody>
-
-                </table>
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Toplam Görev Sayısı</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@(allTodos?.Count() ?? 0)</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-tasks fa-2x text-gray-300"></i>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Kullanıcılar Tablosu -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Sistemdeki Tüm Kullanıcılar</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Profil</th>
+                        <th>Kullanıcı (E-Posta)</th>
+                        <th>Ad Soyad</th>
+                        <th>Sahip Olduğu Görevler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        var userTaskCount = allTodos?.Count(t => t.UserId == user.Id) ?? 0;
+                        <tr>
+                            <td class="text-center">
+                                @if (!string.IsNullOrEmpty(user.ProfilePicturePath))
+                                {
+                                    <img src="@user.ProfilePicturePath" alt="Avatar" class="rounded-circle" width="30" height="30" style="object-fit:cover;">
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user-circle fa-2x text-gray-400"></i>
+                                }
+                            </td>
+                            <td>@user.Email</td>
+                            <td>@(string.IsNullOrEmpty(user.FirstName) ? "-" : $"{user.FirstName} {user.LastName}")</td>
+                            <td>
+                                <span class="badge badge-info p-2">@userTaskCount Görev</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

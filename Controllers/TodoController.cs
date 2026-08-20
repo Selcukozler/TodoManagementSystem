@@ -18,8 +18,9 @@ namespace TodoManagementSystem.Controllers
             _todoService = todoService;
             _userManager = userManager;
         }
-
-        // 1. GÖREVLERİ LİSTELEME EKRANI (Ana Sayfamız)
+        
+        
+         [Authorize]  // 1. GÖREVLERİ LİSTELEME EKRANI (Ana Sayfamız)
 public async Task<IActionResult> Index()
 {
     var userId = _userManager.GetUserId(User);
@@ -159,6 +160,15 @@ public async Task<IActionResult> Index()
     
     return View(todo);
 }
-    
+    public async Task<IActionResult> OtherTasks()
+        {
+            var userId = _userManager.GetUserId(User);
+            var allTodos = await _todoService.GetAllTodosAsync();
+            
+            // Bana ait OLMAYAN görevleri listele
+            var otherTodos = allTodos.Where(t => t.UserId != userId).ToList();
+            
+            return View(otherTodos);
+        }
     }
 }

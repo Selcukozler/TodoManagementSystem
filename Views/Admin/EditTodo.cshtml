@@ -1,46 +1,73 @@
 @model TodoManagementSystem.Models.TodoItem
-
 @{
-    ViewData["Title"] = "Görevi Düzenle (Admin)";
+    ViewData["Title"] = "Görev Düzenle ve Yorumları Yönet";
+    Layout = "_AdminLayout";
 }
 
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-danger">
-            <div class="card-header bg-danger text-white">
-                <h4 class="mb-0">Görevi Düzenle (Yetkili İşlemi)</h4>
+<div class="row">
+    <!-- Sol: Görev Düzenleme Formu -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Görevi Düzenle</h6>
+                <a asp-action="AllTodos" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Geri</a>
             </div>
             <div class="card-body">
                 <form asp-action="EditTodo" method="post">
                     <input type="hidden" asp-for="Id" />
-                    
-                    <div class="alert alert-warning">
-                        <strong>Bilgi:</strong> Şu anda başka bir kullanıcının görevini düzenliyorsunuz.
+                    <div class="form-group">
+                        <label>Görev Başlığı</label>
+                        <input asp-for="Title" class="form-control" required />
                     </div>
-
-                    <div class="form-group mb-3">
-                        <label asp-for="Title" class="control-label fw-bold">Başlık</label>
-                        <input asp-for="Title" class="form-control" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
+                    <div class="form-group">
+                        <label>Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                     </div>
-                    
-                    <div class="form-group mb-3">
-                        <label asp-for="Description" class="control-label fw-bold">Açıklama</label>
-                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                    <div class="form-group form-check mt-3 mb-4">
+                        <input asp-for="IsCompleted" class="form-check-input" />
+                        <label class="form-check-label">Görev Tamamlandı</label>
                     </div>
-
-                    <div class="form-group form-check mb-4">
-                        <label class="form-check-label fw-bold">
-                            <input class="form-check-input" asp-for="IsCompleted" /> Görev Tamamlandı mı?
-                        </label>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between">
-                        <a asp-action="Index" class="btn btn-secondary">Paneline Dön</a>
-                        <button type="submit" class="btn btn-danger">Değişiklikleri Kaydet</button>
-                    </div>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Değişiklikleri Kaydet</button>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sağ: Yorumları Yönet -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-danger">Yorum Yönetimi (Silme)</h6>
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                @if (Model.Comments != null && Model.Comments.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong class="text-primary">@(comment.User?.Email ?? "Bilinmeyen")</strong>
+                                    <small class="text-muted ml-2">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                                    <p class="mb-0 mt-1">@comment.Text</p>
+                                </div>
+                                
+                                <!-- SweetAlert Sınıfı Eklenmiş Yorum Silme Formu -->
+                                <form asp-action="DeleteComment" method="post" class="delete-form" data-message="Bu yorumu kalıcı olarak silmek istediğinize emin misiniz?">
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <input type="hidden" name="todoId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Yorumu Sil">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">Bu görevde henüz yorum yok.</p>
+                }
             </div>
         </div>
     </div>

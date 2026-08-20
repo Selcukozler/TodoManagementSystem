@@ -1,22 +1,29 @@
 @model TodoManagementSystem.Models.TodoItem
-
 @{
     ViewData["Title"] = "Görevi Sil";
+    Layout = "_UserLayout";
 }
 
-<div class="row mt-4 justify-content-center">
-    <div class="col-md-6">
-        <div class="alert alert-danger shadow-sm">
-            <h4 class="alert-heading">Dikkat!</h4>
-            <p><strong>"@Model.Title"</strong> başlıklı bu görevi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
-            
-            <hr>
-            
-            <form asp-action="Delete" method="post" class="d-flex justify-content-between mt-3">
-                <input type="hidden" asp-for="Id" />
-                <a asp-action="Index" class="btn btn-secondary">İptal Et</a>
-                <button type="submit" class="btn btn-danger">Evet, Sil</button>
-            </form>
+<div class="row mt-4">
+    <div class="col-md-6 mx-auto">
+        <div class="card border-danger mb-4">
+            <div class="card-header bg-transparent border-bottom border-danger">
+                <h5 class="text-danger mb-0"><i class="bx bx-error-circle me-2"></i> Silme Onayı</h5>
+            </div>
+            <div class="card-body mt-4 text-center">
+                <h5 class="card-title">"@Model.Title"</h5>
+                <p class="card-text mb-4">Bu görevi kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
+                
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger me-2">
+                        <i class="bx bx-trash me-1"></i> Evet, Kalıcı Olarak Sil
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bx bx-x me-1"></i> İptal Et
+                    </a>
+                </form>
+            </div>
         </div>
     </div>
 </div>

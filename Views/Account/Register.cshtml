@@ -1,37 +1,54 @@
 @model TodoManagementSystem.ViewModels.RegisterViewModel
-
 @{
     ViewData["Title"] = "Kayıt Ol";
+    Layout = "_UserLayout";
 }
 
 <div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <h2 class="text-center mb-4">Yeni Hesap Oluştur</h2>
-        
-        <form asp-action="Register" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-            
-            <div class="form-group mb-3">
-                <label asp-for="Email" class="control-label fw-bold">E-posta Adresi</label>
-                <input asp-for="Email" class="form-control" placeholder="ornek@mail.com" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+    <div class="col-md-5 col-lg-4">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="app-brand justify-content-center mb-3">
+                    <span class="app-brand-text demo text-body fw-bolder fs-4">TodoApp</span>
+                </div>
+                <h4 class="mb-2">Maceraya Başla 🚀</h4>
+                <p class="mb-4">Yeni bir hesap oluşturarak işlerinizi yönetin.</p>
+
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">E-Posta Adresi</label>
+                        <input asp-for="Email" class="form-control" placeholder="E-posta adresiniz" autofocus />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3 form-password-toggle">
+                        <label asp-for="Password" class="form-label">Şifre</label>
+                        <div class="input-group input-group-merge">
+                            <input asp-for="Password" type="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-password-toggle">
+                        <label asp-for="ConfirmPassword" class="form-label">Şifre Tekrar</label>
+                        <div class="input-group input-group-merge">
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <button class="btn btn-primary d-grid w-100" type="submit">Kayıt Ol</button>
+                </form>
+
+                <p class="text-center mt-3 mb-0">
+                    <span>Zaten bir hesabınız var mı?</span>
+                    <a asp-action="Login"><span>Giriş Yap</span></a>
+                </p>
             </div>
-            
-            <div class="form-group mb-3">
-                <label asp-for="Password" class="control-label fw-bold">Şifre</label>
-                <input asp-for="Password" class="form-control" placeholder="Şifrenizi giriniz" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group mb-4">
-                <label asp-for="ConfirmPassword" class="control-label fw-bold">Şifre Tekrar</label>
-                <input asp-for="ConfirmPassword" class="form-control" placeholder="Şifrenizi tekrar giriniz" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary btn-block">Kayıt Ol</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>

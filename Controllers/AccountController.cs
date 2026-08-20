@@ -58,22 +58,32 @@ namespace TodoManagementSystem.Controllers
 
         // 4. GİRİŞ YAP BUTONUNA BASILINCA ÇALIŞAN METOT (POST)
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+public async Task<IActionResult> Login(LoginViewModel model)
+{
+    if (ModelState.IsValid)
+    {
+        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
+        
+        if (result.Succeeded)
         {
-            if (ModelState.IsValid)
+            // Giriş yapan kullanıcıyı veritabanından bul
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            
+            // Eğer giriş yapan kişi belirtilen admin e-posta adresiyse veya Admin rolündeyse
+            if (user != null && (user.Email == "admin@mail.com" || await _userManager.IsInRoleAsync(user, "Admin")))
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
-
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Home"); 
-                }
-
-                ModelState.AddModelError(string.Empty, "E-posta veya şifre hatalı.");
+                // Yöneticileri doğrudan kendi paneline (SB Admin 2) yönlendir
+                return RedirectToAction("Index", "Admin");
             }
-            return View(model);
+            
+            // Normal kullanıcıları kendi görevlerine (Sneat) yönlendir
+            return RedirectToAction("Index", "Todo");
         }
-
+        
+        ModelState.AddModelError(string.Empty, "Geçersiz e-posta veya şifre.");
+    }
+    return View(model);
+}
         // 5. ÇIKIŞ YAPMA METODU (POST)
         [HttpPost]
         public async Task<IActionResult> Logout()

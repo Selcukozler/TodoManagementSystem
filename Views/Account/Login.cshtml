@@ -1,33 +1,47 @@
 @model TodoManagementSystem.ViewModels.LoginViewModel
-
 @{
     ViewData["Title"] = "Giriş Yap";
+    Layout = "_UserLayout";
 }
 
 <div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <h2 class="text-center mb-4">Sisteme Giriş Yap</h2>
-        
-        <form asp-action="Login" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-            
-            <div class="form-group mb-3">
-                <label asp-for="Email" class="control-label fw-bold">E-posta Adresi</label>
-                <input asp-for="Email" class="form-control" placeholder="ornek@mail.com" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+    <div class="col-md-5 col-lg-4">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <div class="app-brand justify-content-center mb-3">
+                    <span class="app-brand-text demo text-body fw-bolder fs-4">TodoApp</span>
+                </div>
+                <h4 class="mb-2">Hoş Geldiniz! 👋</h4>
+                <p class="mb-4">Görev panonuza erişmek için giriş yapın.</p>
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">E-Posta Adresi</label>
+                        <input asp-for="Email" class="form-control" placeholder="E-posta adresiniz" autofocus />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3 form-password-toggle">
+                        <label asp-for="Password" class="form-label">Şifre</label>
+                        <div class="input-group input-group-merge">
+                            <input asp-for="Password" type="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <button class="btn btn-primary d-grid w-100" type="submit">Giriş Yap</button>
+                    </div>
+                </form>
+
+                <p class="text-center mt-3 mb-0">
+                    <span>Hesabınız yok mu?</span>
+                    <a asp-action="Register"><span>Hemen Kayıt Olun</span></a>
+                </p>
             </div>
-            
-            <div class="form-group mb-3">
-                <label asp-for="Password" class="control-label fw-bold">Şifre</label>
-                <input asp-for="Password" class="form-control" placeholder="Şifrenizi giriniz" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            
-    
-            
-            <div class="d-grid">
-                <button type="submit" class="btn btn-success btn-block">Giriş Yap</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>

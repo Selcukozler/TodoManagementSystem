@@ -1,8 +1,87 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Anasayfa";
+    Layout = "_UserLayout"; 
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row mt-4">
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <!-- 🟢 GİRİŞ YAPMIŞ KULLANICILAR İÇİN DASHBOARD GÖRÜNÜMÜ -->
+        <div class="col-lg-8 mb-4 order-0">
+            <div class="card">
+                <div class="d-flex align-items-end row">
+                    <div class="col-sm-7">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Tekrar Hoş Geldin, @User.Identity.Name! 🎉</h5>
+                            <p class="mb-4">
+                                Bugün yapman gereken harika işler seni bekliyor. Vakit kaybetmeden görevlerini planlamaya ve yönetmeye başla.
+                            </p>
+                            <a href="/Todo/Index" class="btn btn-sm btn-outline-primary">
+                                <i class="bx bx-task me-1"></i> Görevlerime Git
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-5 text-center text-sm-left">
+                        <div class="card-body pb-0 px-0 px-md-4">
+                            <!-- Sneat'in kendi içindeki standart illüstrasyonu -->
+                            <img src="~/sneat/assets/img/illustrations/man-with-laptop-light.png" height="140" alt="View Badge User">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hızlı İşlemler Sağ Kolon -->
+        <div class="col-lg-4 col-md-4 order-1 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <div class="avatar avatar-md mx-auto mb-3">
+                        <span class="avatar-initial rounded-circle bg-label-success"><i class="bx bx-plus fs-4"></i></span>
+                    </div>
+                    <h6 class="mb-2">Yeni Bir Fikrin mi Var?</h6>
+                    <p class="text-muted mb-3" style="font-size: 0.9em;">Hemen sisteme yeni bir görev ekle.</p>
+                    <a href="/Todo/Create" class="btn btn-sm btn-success mx-auto">Yeni Görev Oluştur</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alt Kısım: Topluluk Yönlendirmesi -->
+        <div class="col-12 order-2">
+            <div class="card">
+                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                    <div>
+                        <h5 class="card-title mb-1">Topluluğu Keşfet</h5>
+                        <p class="card-text mb-0 text-muted">Sistemdeki diğer kullanıcıların neler üzerinde çalıştığını gör ve onlara yorum yap.</p>
+                    </div>
+                    <a href="/Todo/OtherTasks" class="btn btn-info mt-3 mt-md-0">
+                        <i class="bx bx-group me-1"></i> Topluluk Panosu
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- 🔴 GİRİŞ YAPMAMIŞ (ZİYARETÇİ) KİŞİLER İÇİN KARŞILAMA -->
+        <div class="col-md-6 mx-auto mt-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center py-5">
+                    <div class="app-brand justify-content-center mb-4">
+                        <span class="app-brand-text demo text-body fw-bolder fs-2">TodoApp</span>
+                    </div>
+                    <h4 class="mb-3">Görev Yönetim Sistemine Hoş Geldiniz! 👋</h4>
+                    <p class="mb-4 text-muted">Günlük işlerinizi kolayca planlayın, yönetin ve diğer kullanıcılarla etkileşime geçin.</p>
+
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary px-4">
+                            <i class="bx bx-log-in me-1"></i> Giriş Yap
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary px-4">
+                            <i class="bx bx-user-plus me-1"></i> Kayıt Ol
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
